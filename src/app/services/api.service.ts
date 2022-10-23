@@ -1,24 +1,69 @@
-import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import {Observable } from 'rxjs';
-import { Product } from '../models/product.model';
+import { HttpClient, HttpParams, HttpErrorResponse, HttpStatusCode } from '@angular/common/http';
+import { retry, catchError } from 'rxjs/operators';
+import { throwError } from 'rxjs';
+
+import { Product, createProductDTO } from '../models/product.model';
+
+import { environment } from './../../environments/environment';
+
 @Injectable({
   providedIn: 'root'
 })
 export class ApiService {
 
- private apiUrl = 'https://young-sands-07814.herokuapp.com/api/products';
+ private apiUrl = `${environment.API_URL}/api/products`;
 
   constructor(
     private http : HttpClient
     ) { }
 
   
-  getAllProducts(): Observable<any>{
-    return this.http.get<Product[]>(this.apiUrl);
-  }
-  getProduct(id: string) {
-    return this.http.get<Product >(`${this.apiUrl}/${id}`);
-
+  getAllProducts(limit?: number, offset?: number){
+    let params = new HttpParams();
+    if ( limit && offset ) {
+      params = params.set( 'limit', limit);
+      params = params.set( 'offset', offset);
     }
+    return this.http.get<Product[]>(this.apiUrl, { params })
+    .pipe(
+      retry(3)
+    );
+  }
+
+  getProductsByPage( limit: number, offset: number) {
+    return this.http.get<Product[]>(`${this.apiUrl}`, {
+      params: { limit, offset}
+    })
+  }
+
+  getProduct(id: string) {
+    return this.http.get<Product>(`${this.apiUrl}/${id}`)
+    .pipe(
+      catchError((error: HttpErrorResponse) => {
+        if(error.status===HttpStatusCode.Conflict) {
+          return throwError('Algo está fallando en el server');
+        }
+        if (error.status === HttpStatusCode.NotFound ) {
+          return throwError('El producto no existe');
+        }
+        if (error.status === HttpStatusCode.Unauthorized ) {
+          return throwError('No estás permitido');
+        }
+        return throwError('Ups algo salió mal');
+      })
+    )
+  }
+  create( dto: createProductDTO ){
+     return this.http.post<Product>(this.apiUrl, dto);
+  }
+
+    update( id: string, dto: any ) {
+      return this.http.put<Product>(`${this.apiUrl}/${id}`, dto);
+    }
+
+    delete(id: string) {
+      return this.http.delete<boolean>(`${this.apiUrl}/${id}`);
+    }
+
   }

@@ -1,4 +1,7 @@
 <app-nav></app-nav>
+<button (click)="createNewProduct()">create</button>
+<button (click)="onShowDetail('121')">Detalle Not Found</button>
+
 <div class="products--grid">
     <app-product
     [product]="product"
@@ -6,8 +9,10 @@
     (addedProduct)="onAddToShoppingCart($event)"
     (showProduct)="onShowDetail($event)"
     ></app-product>
+    <button (click)="loadMOre()">Load More</button>
 </div>
 <div class="product-detail" [class.active]="showProductDetail">
+  {{ statusDetail}}
     <div *ngIf="productChosen">
         <button (click)="toggleProductDetail()">Close</button>
         <h1>{{productChosen.title}}</h1>
@@ -21,6 +26,8 @@
     </swiper>
   `,
         <h1>{{productChosen.description}}</h1>
-   
+   <button (click)="updateProduct()">editar</button>
+   <button (click)="deleteProduct()">eliminar</button>
+
     </div> 
 </div>    

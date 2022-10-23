@@ -5,6 +5,7 @@ import { Product } from '../models/product.model';
 @Injectable({
   providedIn: 'root'
 })
+
 export class StoreService {
   private myShoppingCart: Product[] = [];
   private myCart = new BehaviorSubject<Product[]>([]);
