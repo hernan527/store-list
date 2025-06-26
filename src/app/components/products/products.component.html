@@ -15,17 +15,17 @@
   {{ statusDetail}}
     <div *ngIf="productChosen">
         <button (click)="toggleProductDetail()">Close</button>
-        <h1>{{productChosen.title}}</h1>
+        <h1>{{productChosen.product_title}}</h1>
         `
     <swiper
       [slidesPerView]="1">
-      <ng-template swiperSlide *ngFor="let img of productChosen.images">
+      <ng-template swiperSlide *ngFor="let img of productChosen.product_photo">
         <img [src]="img" alt="">
       </ng-template>
 
     </swiper>
   `,
-        <h1>{{productChosen.description}}</h1>
+        <h1>{{productChosen.product_star_rating}}</h1>
    <button (click)="updateProduct()">editar</button>
    <button (click)="deleteProduct()">eliminar</button>
 

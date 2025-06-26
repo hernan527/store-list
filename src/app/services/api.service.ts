@@ -1,18 +1,19 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams, HttpErrorResponse, HttpStatusCode } from '@angular/common/http';
+import { HttpClient, HttpParams, HttpErrorResponse, HttpStatusCode, HttpHeaders } from '@angular/common/http';
 import { retry, catchError } from 'rxjs/operators';
-import { throwError } from 'rxjs';
+import { Observable, throwError } from 'rxjs';
 
 import { Product, createProductDTO } from '../models/product.model';
 
 import { environment } from './../../environments/environment';
+import { query } from '@angular/animations';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ApiService {
 
- private apiUrl = `${environment.API_URL}/api/products`;
+ private apiUrl = `${environment.API_URL}`;
 
   constructor(
     private http : HttpClient
@@ -65,5 +66,41 @@ export class ApiService {
     delete(id: string) {
       return this.http.delete<boolean>(`${this.apiUrl}/${id}`);
     }
+    
+// Método para obtener productos de ofertas
+getDealProducts(dealId: string, country: string, sortBy: string, page: number): Observable<any> {
+  const headers = new HttpHeaders()
+    .set('x-apihub-key', 'V4Jn0lbATPgNYkeXIezrWuvB3JQ9ylatsLmI-3wbHBGJznrSpB')  // Tu API Key
+    .set('x-apihub-host', 'Real-Time-Amazon-Data.allthingsdev.co')
+    .set('x-apihub-endpoint', '5a5718b3-fc79-4439-827b-64349eaeeb30');
 
+  const params = new HttpParams()
+    .set('deal_id', dealId)
+    .set('country', country)
+    .set('sort_by', sortBy)
+    .set('page', page.toString());
+
+  return this.http.get<any>(`${this.apiUrl}/deal-products`, { headers, params });
+}
+ 
+
+// Método para obtener productos de ofertas
+getProductsByCategory(category_id: string, page: string, country: string, sort_by: string,product_condition: string, min_price: number, max_price: number, brand: string ): Observable<any> {
+  const headers = new HttpHeaders()
+    .set('x-apihub-key', 'V4Jn0lbATPgNYkeXIezrWuvB3JQ9ylatsLmI-3wbHBGJznrSpB')  // Tu API Key
+    .set('x-apihub-host', 'Real-Time-Amazon-Data.allthingsdev.co')
+    .set('x-apihub-endpoint', '5a5718b3-fc79-4439-827b-64349eaeeb30');
+
+  const params = new HttpParams()
+  .set('category_id', '2478868012')  // Mantén el category_id si es válido
+  .set('country', country)
+  .set('sort_by', sort_by)
+  .set('product_condition', 'ALL')
+  .set('min_price', '105')
+  .set('max_price', '110')
+  .set('page', page.toString());
+  const data = this.http.get<any>(`${this.apiUrl}/products-by-category`, { headers, params });
+   console.log(data)
+  return data;
+}
   }

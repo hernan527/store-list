@@ -24,6 +24,6 @@ export class StoreService {
     return this.myShoppingCart;
   }
   getTotal(){
-    return this.myShoppingCart.reduce((sum, item) => sum + item.price, 0)
+    return this.myShoppingCart.reduce((sum, item) => sum + item.product_price, 0)
   }
 }

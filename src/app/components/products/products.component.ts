@@ -16,15 +16,24 @@ total = 0;
 showProductDetail = false;
 products: Product[] = [];
 productChosen: Product ={
-    id:'',
-    title:'',
-    images:[],
-    price:0,
-    category: {
-      id:'',
-      name:'',
-    },
-    description: ''
+  asin: '',
+  product_title: '',
+  product_photo: '',
+  product_price: 1000,
+  product_original_price: 0,
+  currency: '',
+  product_star_rating: 0,
+  product_num_ratings: 0,
+  product_url: '',
+  product_num_offers: 0,
+  product_minimum_offer_price: '',
+  is_best_seller: false,
+  is_amazon_choice: false,
+  is_prime: false,
+  climate_pledge_friendly: false,
+  sales_volume: '',
+  delivery: '',
+
 };
 
 limit = 10;
@@ -40,11 +49,27 @@ statusDetail: 'loading' | 'success' | 'error' | 'init' = 'init' ;
   }
 
   ngOnInit(): void {
-    this.apiService.getProductsByPage(10 , 0)
-    .subscribe(data => {
-      this.products = data;
-      this.offset += this.limit
+    // this.apiService.getProductsByPage(10 , 0)
+    // .subscribe(data => {
+    //   this.products = data;
+    //   this.offset += this.limit
+    // });
+
+    this.apiService.getProductsByCategory('2478868012', '1', 'US', 'RELEVANCE', 'ALL', 105, 110, '')
+    .subscribe(response => {
+      if (response && response.data && response.data.products && response.data.products.length > 0) {
+        console.log('Productos obtenidos:', response.data.products);
+        this.products = response.data.products;  // Aquí puedes adaptar la estructura de los datos según lo que te devuelva la API
+        console.log(this.products);
+      } else {
+        console.log('No se encontraron productos.');
+      }
+    },
+    (error) => {
+      console.error('Error al obtener los products:', error);
     });
+  
+
   }
 
   onAddToShoppingCart(product: Product){
@@ -73,12 +98,25 @@ statusDetail: 'loading' | 'success' | 'error' | 'init' = 'init' ;
   }
   createNewProduct(){
     const product: createProductDTO = {
-    title: 'Nuevo Producto',
-    description: 'bla bla bla',
-    images: ['https://placeimg.com/640/480/any'],
-    price: 1000,
-    categoryId: 2,
-  }
+      asin: '',
+      product_title: 'Nuevo Producto',
+      product_photo: 'https://placeimg.com/640/480/any',
+      product_price: 1000,
+      categoryId: 2,
+      product_original_price: 0,
+      currency: '',
+      product_star_rating: 0,
+      product_num_ratings: 0,
+      product_url: '',
+      product_num_offers: 0,
+      product_minimum_offer_price: '',
+      is_best_seller: false,
+      is_amazon_choice: false,
+      is_prime: false,
+      climate_pledge_friendly: false,
+      sales_volume: '',
+      delivery: ''
+    }
     this.apiService.create(product)
     .subscribe(data => {
       this.products.unshift(data);
@@ -87,21 +125,21 @@ statusDetail: 'loading' | 'success' | 'error' | 'init' = 'init' ;
 
   updateProduct() {
     const changes: UpdateProductDTO = {
-      title: 'change title',
+      product_title: 'change title',
     }
-    const id = this.productChosen.id;
+    const id = this.productChosen.asin;
     this.apiService.update(id,changes)
     .subscribe( data =>{
-      const productIndex = this.products.findIndex(item => item.id === this.productChosen.id);
+      const productIndex = this.products.findIndex(item => item.asin === this.productChosen.asin);
       this.products[productIndex] = data;
     })
   }
 
   deleteProduct(){
-    const id = this.productChosen.id;
+    const id = this.productChosen.asin;
     this.apiService.delete(id)
     .subscribe(data => {
-      const productIndex = this.products.findIndex(item => item.id === this.productChosen.id);
+      const productIndex = this.products.findIndex(item => item.asin === this.productChosen.asin);
       this.products.splice(productIndex, 1);
       this.showProductDetail = false;
     });

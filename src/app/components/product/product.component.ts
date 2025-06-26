@@ -10,15 +10,23 @@ import { } from '../../directives/highlight.directive';
 export class ProductComponent{
 
   @Input() product: Product={
-    id:'',
-    title:'',
-    images:[],
-    price:0,
-    description:'',
-    category: {
-      id:'',
-      name:'',
-    }
+    asin: '',
+    product_title: '',
+    product_photo: '',
+    product_price: 1000,
+    product_original_price: 0,
+    currency: '',
+    product_star_rating: 0,
+    product_num_ratings: 0,
+    product_url: '',
+    product_num_offers: 0,
+    product_minimum_offer_price: '',
+    is_best_seller: false,
+    is_amazon_choice: false,
+    is_prime: false,
+    climate_pledge_friendly: false,
+    sales_volume: '',
+    delivery: ''
     };
   
     @Output() addedProduct = new EventEmitter<Product>();
@@ -31,6 +39,6 @@ export class ProductComponent{
   }
 
   onShowDetail() {
-    this.showProduct.emit(this.product.id)
+    this.showProduct.emit(this.product.asin)
   }
 }

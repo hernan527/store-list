@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  API_URL: '',
+  API_URL: 'https://Real-Time-Amazon-Data.proxy-production.allthingsdev.co/v2'
 };
 
 /*

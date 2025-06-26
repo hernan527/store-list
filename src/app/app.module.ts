@@ -32,7 +32,6 @@ import { SwiperModule } from 'swiper/angular';
     FormsModule,
     HttpClientModule,
     SwiperModule
-    
   ],
   providers: [],
   bootstrap: [AppComponent]

@@ -17,7 +17,7 @@ export class NavComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-this.storeService.myCart$.subscribe(products=>{
+this.storeService.myCart$.subscribe((products: string | any[])=>{
   console.log(products.length)
 this.counter = products.length;
 })
